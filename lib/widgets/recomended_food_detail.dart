@@ -1,24 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_11_hour_lesson/data/api/api_with_http.dart';
 import 'package:flutter_11_hour_lesson/models/app_colors.dart';
 import 'package:flutter_11_hour_lesson/models/dimensions.dart';
 import 'package:flutter_11_hour_lesson/widgets/app_icon.dart';
 import 'package:flutter_11_hour_lesson/widgets/big_text.dart';
 import 'package:flutter_11_hour_lesson/widgets/expandable_text.widget.dart';
+import 'package:get/get.dart';
 
 class RecommendedFoodDetail extends StatelessWidget {
   const RecommendedFoodDetail({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print("${MediaQuery.of(context).size.height}");
     return Scaffold(
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            automaticallyImplyLeading: false,
             toolbarHeight: 70,
             title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  AppIcon(icon: Icons.clear),
+                  InkWell(
+                    onTap: (){
+                      Get.back();
+                    },
+                    child: AppIcon(icon: Icons.clear)),
                   AppIcon(icon: Icons.shopping_cart_outlined)
                 ]),
             pinned: true,
@@ -75,21 +83,84 @@ class RecommendedFoodDetail extends StatelessWidget {
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              AppIcon(
-                icon: Icons.remove,
-                backgroundColor: AppColors.mainColor,
-                iconColor: Colors.white,
-              ),
-              AppIcon(
-                icon: Icons.add,
-                backgroundColor: AppColors.mainColor,
-                iconColor: Colors.white,
-              ),
-            ],
-          )
+          Container(
+            padding: EdgeInsets.only(
+                right: Dimension.width20,
+                left: Dimension.width20,
+                top: Dimension.height10,
+                bottom: Dimension.height10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AppIcon(
+                  icon: Icons.remove,
+                  backgroundColor: AppColors.mainColor,
+                  iconColor: Colors.white,
+                  iconsize: Dimension.iconsize24,
+                ),
+                BigText(
+                  text: "\$12.88 " + "x " + "0",
+                  size: Dimension.fontSize26,
+                ),
+                AppIcon(
+                  icon: Icons.add,
+                  backgroundColor: AppColors.mainColor,
+                  iconColor: Colors.white,
+                  iconsize: Dimension.iconsize24,
+                ),
+              ],
+            ),
+          ),
+          Container(
+            height: Dimension.bottomNavContainerSize,
+            padding: EdgeInsets.only(
+                top: Dimension.height30,
+                bottom: Dimension.height30,
+                left: Dimension.width20,
+                right: Dimension.width20),
+            decoration: BoxDecoration(
+                color: AppColors.buttonBackgroundColor,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(
+                      Dimension.radius20 * 2,
+                    ),
+                    topRight: Radius.circular(
+                      Dimension.radius20 * 2,
+                    ))),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                      padding: EdgeInsets.only(
+                          top: Dimension.height20,
+                          bottom: Dimension.height20,
+                          left: Dimension.width20,
+                          right: Dimension.width20),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius:
+                              BorderRadius.circular(Dimension.radius20)),
+                      child: Icon(
+                        Icons.favorite,
+                        color: AppColors.mainColor,
+                      )),
+                  Container(
+                    padding: EdgeInsets.only(
+                        top: Dimension.height20,
+                        bottom: Dimension.height20,
+                        left: Dimension.width20,
+                        right: Dimension.width20),
+                    decoration: BoxDecoration(
+                        color: AppColors.mainColor,
+                        borderRadius:
+                            BorderRadius.circular(Dimension.radius20)),
+                    child: BigText(
+                      text: '\$10 | Add to cart',
+                      color: Colors.white,
+                    ),
+                  )
+                ]),
+          ),
         ],
       ),
     );

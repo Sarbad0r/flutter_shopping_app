@@ -25,11 +25,13 @@ class Dimension
   static double listViewTextConSize = screenHeight / 6.83; 
   static double popularFoodImgSize = screenHeight / 1.84; 
 
+  static double iconsize24 = screenHeight /28.4;
 
   static double iconSize16 = screenHeight / 42.68;
   static double bottomStackPopular = screenHeight /1.95;
 
   static double bottomNavContainerSize = screenHeight / 5.69;
 
-  static double fontSize17 = screenHeight /40.17;
+  static double fontSize17 = screenHeight /40.17; 
+  static double fontSize26 = screenHeight /26.26; 
 }
