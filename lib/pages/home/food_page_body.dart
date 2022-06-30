@@ -60,11 +60,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                     controller: pageController,
                     itemCount: getProductFromApi.listOfproductTop.length,
                     itemBuilder: (context, index) {
-                      return InkWell(
-                          onTap: () {
-                            Get.to(RecommendedFoodDetail());
-                          },
-                          child: _buildPageItem(getProductFromApi, index));
+                      return _buildPageItem(getProductFromApi, index);
                     }),
               )),
         Obx(() => DotsIndicator(
@@ -77,7 +73,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                 size: const Size.square(9.0),
                 activeSize: const Size(18.0, 9.0),
                 activeShape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0)),
+                    borderRadius: BorderRadius.circular(Dimension.width30 / 6)),
               ),
             )),
         SizedBox(
@@ -115,7 +111,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => PopularFood()));
+                              builder: (context) => RecommendedFoodDetail(recommendedId: index,)));
                     },
                     child: Container(
                       margin: EdgeInsets.only(
@@ -167,6 +163,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                                       height: Dimension.height20,
                                     ),
                                     Row(
+
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
@@ -180,11 +177,13 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                                             text: '1.7km',
                                             color: Colors.black54,
                                             iconColor: AppColors.iconColor2),
-                                        IconAndTextWidget(
-                                            icon: Icons.access_time_rounded,
-                                            text: '1.7km',
-                                            color: Colors.black54,
-                                            iconColor: AppColors.iconColor2)
+                                        Expanded(
+                                          child: IconAndTextWidget(
+                                              icon: Icons.access_time_rounded,
+                                              text: '1.7km',
+                                              color: Colors.black54,
+                                              iconColor: AppColors.iconColor2),
+                                        )
                                       ],
                                     )
                                   ],
@@ -229,100 +228,105 @@ class _FoodPageBodyState extends State<FoodPageBody> {
 
     return Transform(
       transform: matrix,
-      child: Stack(
-        children: [
-          Container(
-            height: Dimension.pageViewContainer,
-            margin: const EdgeInsets.only(left: 10, right: 10),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Dimension.radius30),
-                color: index.isEven
-                    ? const Color(0xFF69c5df)
-                    : const Color(0xFF9294cc),
-                image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage("https://mvs.bslmeiyu.com/" +
-                        "uploads/" +
-                        getProductFromApi.listOfproductTop[index].img!))),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: Dimension.pageViewTextContainer,
-              margin: const EdgeInsets.only(left: 30, right: 30, bottom: 30),
-              decoration: BoxDecoration(boxShadow: const [
-                BoxShadow(
-                    color: Color(0xFFe8e8e8),
-                    blurRadius: 5.0,
-                    offset: Offset(0, 5)),
-                BoxShadow(color: Colors.white, offset: Offset(-5, 0)),
-                BoxShadow(color: Colors.white, offset: Offset(5, 0)),
-              ], borderRadius: BorderRadius.circular(20), color: Colors.white),
+      child: InkWell(
+        onTap:(){
+           Get.to(PopularFood(pageId: index));
+        },
+        child: Stack(
+          children: [
+            Container(
+              height: Dimension.pageViewContainer,
+              margin: const EdgeInsets.only(left: 10, right: 10),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(Dimension.radius30),
+                  color: index.isEven
+                      ? const Color(0xFF69c5df)
+                      : const Color(0xFF9294cc),
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage("https://mvs.bslmeiyu.com/"+
+                          "uploads/" +
+                          getProductFromApi.listOfproductTop[index].img!))),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
               child: Container(
-                margin: const EdgeInsets.only(top: 10, left: 15, right: 15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    BigText(
-                        text: getProductFromApi.listOfproductTop[index].name
-                            .toString()),
-                    SizedBox(
-                      height: Dimension.height10,
-                    ),
-                    Row(
-                      children: [
-                        Wrap(
-                          children: List.generate(
-                              getProductFromApi.listOfproductTop[index].stars!
-                                  .toInt(),
-                              (index) => Icon(
-                                    Icons.star,
-                                    size: 15,
-                                    color: AppColors.mainColor,
-                                  )),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        SmallText(
-                          text: '4,5',
-                          color: Colors.black54,
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        SmallText(text: '1287 comments', color: Colors.black54)
-                      ],
-                    ),
-                    SizedBox(
-                      height: Dimension.height20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconAndTextWidget(
-                            icon: Icons.circle_sharp,
-                            text: 'Normal',
+                height: Dimension.pageViewTextContainer,
+                margin: const EdgeInsets.only(left: 30, right: 30, bottom: 30),
+                decoration: BoxDecoration(boxShadow: const [
+                  BoxShadow(
+                      color: Color(0xFFe8e8e8),
+                      blurRadius: 5.0,
+                      offset: Offset(0, 5)),
+                  BoxShadow(color: Colors.white, offset: Offset(-5, 0)),
+                  BoxShadow(color: Colors.white, offset: Offset(5, 0)),
+                ], borderRadius: BorderRadius.circular(20), color: Colors.white),
+                child: Container(
+                  margin: const EdgeInsets.only(top: 10, left: 15, right: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BigText(
+                          text: getProductFromApi.listOfproductTop[index].name
+                              .toString()),
+                      SizedBox(
+                        height: Dimension.height10,
+                      ),
+                      Row(
+                        children: [
+                          Wrap(
+                            children: List.generate(
+                                getProductFromApi.listOfproductTop[index].stars!
+                                    .toInt(),
+                                (index) => Icon(
+                                      Icons.star,
+                                      size: 15,
+                                      color: AppColors.mainColor,
+                                    )),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          SmallText(
+                            text: '4,5',
                             color: Colors.black54,
-                            iconColor: AppColors.iconColor1),
-                        IconAndTextWidget(
-                            icon: Icons.location_on,
-                            text: '1.7km',
-                            color: Colors.black54,
-                            iconColor: AppColors.iconColor2),
-                        IconAndTextWidget(
-                            icon: Icons.access_time_rounded,
-                            text: '1.7km',
-                            color: Colors.black54,
-                            iconColor: AppColors.iconColor2)
-                      ],
-                    )
-                  ],
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          SmallText(text: '1287 comments', color: Colors.black54)
+                        ],
+                      ),
+                      SizedBox(
+                        height: Dimension.height20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconAndTextWidget(
+                              icon: Icons.circle_sharp,
+                              text: 'Normal',
+                              color: Colors.black54,
+                              iconColor: AppColors.iconColor1),
+                          IconAndTextWidget(
+                              icon: Icons.location_on,
+                              text: '1.7km',
+                              color: Colors.black54,
+                              iconColor: AppColors.iconColor2),
+                          IconAndTextWidget(
+                              icon: Icons.access_time_rounded,
+                              text: '1.7km',
+                              color: Colors.black54,
+                              iconColor: AppColors.iconColor2)
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

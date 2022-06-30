@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_11_hour_lesson/data/api/api_with_http.dart';
 import 'package:flutter_11_hour_lesson/models/dimensions.dart';
 import 'package:flutter_11_hour_lesson/widgets/app_icon.dart';
 import 'package:flutter_11_hour_lesson/widgets/expandable_text.widget.dart';
+import 'package:get/get.dart';
 
 import '../../models/app_colors.dart';
 import '../../widgets/big_text.dart';
@@ -10,10 +12,13 @@ import '../../widgets/icon_and_text_widget.dart';
 import '../../widgets/small_text.dart';
 
 class PopularFood extends StatelessWidget {
-  const PopularFood({Key? key}) : super(key: key);
+  int pageId;
+  PopularFood({Key? key, required this.pageId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var product = Get.put(ApiWithHttp()).listOfproductTop[pageId];
+    print("${product.name}");
     return Scaffold(
         bottomNavigationBar: Container(
           height: Dimension.bottomNavContainerSize,
@@ -74,7 +79,7 @@ class PopularFood extends StatelessWidget {
                   color: AppColors.mainColor,
                   borderRadius: BorderRadius.circular(Dimension.radius20)),
               child: BigText(
-                text: '\$10 | Add to cart',
+                text: '\$${product.price} | Add to cart',
                 color: Colors.white,
               ),
             )
@@ -88,11 +93,12 @@ class PopularFood extends StatelessWidget {
                 child: Container(
                   width: double.maxFinite,
                   height: Dimension.popularFoodImgSize,
-                  decoration: const BoxDecoration(
+                  decoration:  BoxDecoration(
                       image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: AssetImage(
-                              'assets/images/restaurant-chinese.jpg'))),
+                          image: NetworkImage("https://mvs.bslmeiyu.com/"+
+                          "uploads/" +
+                         product.img!))),
                 )),
             Positioned(
                 top: Dimension.height30,
@@ -103,7 +109,7 @@ class PopularFood extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        Navigator.pop(context);
+                       Get.back();
                       },
                       child: AppIcon(
                         icon: Icons.arrow_back_ios,
@@ -144,7 +150,7 @@ class PopularFood extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            BigText(text: "Nutritious fruit meal in China"),
+                            BigText(text: "${product.name}"),
                             SizedBox(
                               height: Dimension.height10,
                             ),
@@ -152,14 +158,14 @@ class PopularFood extends StatelessWidget {
                               children: [
                                 Row(
                                   children: List.generate(
-                                      5,
+                                      product.stars!,
                                       (index) => Icon(
                                             Icons.star,
                                             color: AppColors.mainColor,
                                             size: Dimension.iconSize16,
                                           )),
                                 ),
-                                SmallText(text: "With Chinese characteristics"),
+                                  SmallText(text: '1287 comments', color: Colors.black54)
                               ],
                             ),
                             SizedBox(
@@ -195,7 +201,7 @@ class PopularFood extends StatelessWidget {
                           child: SingleChildScrollView(
                             child: ExpandedAbleText(
                                 text:
-                                    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
+                                    product.description!),
                           ),
                         )
                       ],

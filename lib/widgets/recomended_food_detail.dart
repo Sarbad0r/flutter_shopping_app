@@ -1,17 +1,49 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_11_hour_lesson/data/api/api_with_http.dart';
 import 'package:flutter_11_hour_lesson/models/app_colors.dart';
+import 'package:flutter_11_hour_lesson/models/cart_model.dart';
 import 'package:flutter_11_hour_lesson/models/dimensions.dart';
 import 'package:flutter_11_hour_lesson/widgets/app_icon.dart';
 import 'package:flutter_11_hour_lesson/widgets/big_text.dart';
 import 'package:flutter_11_hour_lesson/widgets/expandable_text.widget.dart';
 import 'package:get/get.dart';
 
-class RecommendedFoodDetail extends StatelessWidget {
-  const RecommendedFoodDetail({Key? key}) : super(key: key);
+class RecommendedFoodDetail extends StatefulWidget {
+  int recommendedId;
+  RecommendedFoodDetail({Key? key, required this.recommendedId})
+      : super(key: key);
+
+  @override
+  State<RecommendedFoodDetail> createState() => _RecommendedFoodDetailState();
+}
+
+class _RecommendedFoodDetailState extends State<RecommendedFoodDetail> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    var getRecommendedId =
+        Get.put(ApiWithHttp()).listOfProductBottom[widget.recommendedId];
+
+    var getGetx = Get.put(ApiWithHttp());
+    getGetx.initProduct();
+    if (getGetx.items.isNotEmpty) {
+      CartModel? getQty = getGetx.items.values
+              .every((element) => element.id != getRecommendedId.id)
+          ? null
+          : getGetx.items.values
+              .firstWhere((element) => element.id == getRecommendedId.id);
+
+      getGetx.setQty(getQty == null ? 0.toInt() : getQty.qty!.toInt());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    var getGetx = Get.put(ApiWithHttp());
+    var getRecommendedId =
+        Get.put(ApiWithHttp()).listOfProductBottom[widget.recommendedId];
     print("${MediaQuery.of(context).size.height}");
     return Scaffold(
       body: CustomScrollView(
@@ -23,11 +55,15 @@ class RecommendedFoodDetail extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
-                    onTap: (){
-                      Get.back();
-                    },
-                    child: AppIcon(icon: Icons.clear)),
-                  AppIcon(icon: Icons.shopping_cart_outlined)
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: AppIcon(icon: Icons.clear)),
+                  Obx((() => Badge(
+                        showBadge: getGetx.items.isEmpty ? false : true,
+                        badgeContent: Text("${getGetx.items.length}"),
+                        child: AppIcon(icon: Icons.shopping_cart_outlined),
+                      )))
                 ]),
             pinned: true,
             bottom: PreferredSize(
@@ -45,15 +81,16 @@ class RecommendedFoodDetail extends StatelessWidget {
                       left: Dimension.width10),
                   width: double.maxFinite,
                   child: BigText(
-                    text: "SliverAppABar",
+                    text: "${getRecommendedId.name}",
                     color: Colors.black,
                   )),
             ),
             backgroundColor: AppColors.yellowColor,
             expandedHeight: 300,
             flexibleSpace: FlexibleSpaceBar(
-              background: Image.asset(
-                'assets/images/food.jpg',
+              background: Image.network(
+                "https://mvs.bslmeiyu.com/uploads"
+                "/${getRecommendedId.img}",
                 width: double.maxFinite,
                 fit: BoxFit.cover,
               ),
@@ -70,9 +107,8 @@ class RecommendedFoodDetail extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.only(
                         left: Dimension.width20, right: Dimension.width20),
-                    child: ExpandedAbleText(
-                        text:
-                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
+                    child:
+                        ExpandedAbleText(text: getRecommendedId.description!),
                   )
                 ],
               ),
@@ -92,21 +128,33 @@ class RecommendedFoodDetail extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppIcon(
-                  icon: Icons.remove,
-                  backgroundColor: AppColors.mainColor,
-                  iconColor: Colors.white,
-                  iconsize: Dimension.iconsize24,
+                InkWell(
+                  onTap: () {
+                    getGetx.setQuantity(false);
+                  },
+                  child: AppIcon(
+                    icon: Icons.remove,
+                    backgroundColor: AppColors.mainColor,
+                    iconColor: Colors.white,
+                    iconsize: Dimension.iconsize24,
+                  ),
                 ),
-                BigText(
-                  text: "\$12.88 " + "x " + "0",
-                  size: Dimension.fontSize26,
+                Obx(
+                  () => BigText(
+                    text: "\$${getRecommendedId.price} " "x " "${getGetx.qty}",
+                    size: Dimension.fontSize26,
+                  ),
                 ),
-                AppIcon(
-                  icon: Icons.add,
-                  backgroundColor: AppColors.mainColor,
-                  iconColor: Colors.white,
-                  iconsize: Dimension.iconsize24,
+                InkWell(
+                  onTap: () {
+                    getGetx.setQuantity(true);
+                  },
+                  child: AppIcon(
+                    icon: Icons.add,
+                    backgroundColor: AppColors.mainColor,
+                    iconColor: Colors.white,
+                    iconsize: Dimension.iconsize24,
+                  ),
                 ),
               ],
             ),
@@ -144,20 +192,25 @@ class RecommendedFoodDetail extends StatelessWidget {
                         Icons.favorite,
                         color: AppColors.mainColor,
                       )),
-                  Container(
-                    padding: EdgeInsets.only(
-                        top: Dimension.height20,
-                        bottom: Dimension.height20,
-                        left: Dimension.width20,
-                        right: Dimension.width20),
-                    decoration: BoxDecoration(
-                        color: AppColors.mainColor,
-                        borderRadius:
-                            BorderRadius.circular(Dimension.radius20)),
-                    child: BigText(
-                      text: '\$10 | Add to cart',
-                      color: Colors.white,
-                    ),
+                  InkWell(
+                    onTap: () {
+                      getGetx.addItem(getRecommendedId, getGetx.qty);
+                    },
+                    child: Container(
+                        padding: EdgeInsets.only(
+                            top: Dimension.height20,
+                            bottom: Dimension.height20,
+                            left: Dimension.width20,
+                            right: Dimension.width20),
+                        decoration: BoxDecoration(
+                            color: AppColors.mainColor,
+                            borderRadius:
+                                BorderRadius.circular(Dimension.radius20)),
+                        child: Obx((() => BigText(
+                              text:
+                                  '\$${getRecommendedId.price! * getGetx.qty.toInt()} | Add to cart',
+                              color: Colors.white,
+                            )))),
                   )
                 ]),
           ),
